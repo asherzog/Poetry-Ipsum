@@ -49,6 +49,8 @@ function findPoemLines(titles) {
     while (randomTitles.length < 5) {
       randomTitles.push(titles[Math.floor(Math.random() * (titles.length -1))]);
     }
+  }else {
+    randomTitles.push(titles);
   }
 
   var promises = randomTitles.map(function(title) {
@@ -60,12 +62,20 @@ function findPoemLines(titles) {
 // ----------------------------------------------
 function createIpsumArray(allTheData) {
   var ipsum = [];
-  while (ipsum.length < 40) {
+  if (allTheData.length < 3) {
     for (var i = 0; i < allTheData.length; i++) {
       var lines = allTheData[i][0].lines;
       ipsum.push(lines[Math.floor(Math.random() * (lines.length - 1))]);
     }
+  }else {
+    while (ipsum.length < 40) {
+      for (var i = 0; i < allTheData.length; i++) {
+        var lines = allTheData[i][0].lines;
+        ipsum.push(lines[Math.floor(Math.random() * (lines.length - 1))]);
+      }
+    }
   }
+
 
   addIpsumToPage(ipsum);
 }
@@ -77,39 +87,28 @@ function addIpsumToPage(ipsum) {
 };
 
 
-
-
-
-
 var options = {
   data: [
     "Adam Lindsay Gordon",
     "Alan Seeger",
     "Alexander Pope",
     "Algernon Charles Swinburne",
-    "Ambrose Bierce",
     "Amy Levy",
     "Andrew Marvell",
-    "Ann Taylor",
     "Anne Bradstreet",
     "Anne Bronte",
     "Anne Killigrew",
     "Anne Kingsmill Finch",
     "Annie Louisa Walker",
-    "Arthur Hugh Clough",
     "Ben Jonson",
-    "Charles Kingsley",
     "Charles Sorley",
     "Charlotte Bronte",
-    "Charlotte Smith",
     "Christina Rossetti",
     "Christopher Marlowe",
-    "Christopher Smart",
     "Coventry Patmore",
     "Edgar Allan Poe",
     "Edmund Spenser",
     "Edward Fitzgerald",
-    "Edward Lear",
     "Edward Taylor",
     "Edward Thomas",
     "Eliza Cook",
@@ -121,7 +120,6 @@ var options = {
     "Eugene Field",
     "Francis Thompson",
     "Geoffrey Chaucer",
-    "George Eliot",
     "George Gordon, Lord Byron",
     "George Herbert",
     "George Meredith",
@@ -132,7 +130,6 @@ var options = {
     "Henry Wadsworth Longfellow",
     "Hugh Henry Brackenridge",
     "Isaac Watts",
-    "James Henry Leigh Hunt",
     "James Thomson",
     "James Whitcomb Riley",
     "Jane Austen",
@@ -142,9 +139,7 @@ var options = {
     "John Dryden",
     "John Greenleaf Whittier",
     "John Keats",
-    "John McCrae",
     "John Milton",
-    "John Trumbull",
     "John Wilmot",
     "Jonathan Swift",
     "Joseph Warton",
@@ -155,19 +150,13 @@ var options = {
     "Lady Mary Chudleigh",
     "Lewis Carroll",
     "Lord Alfred Tennyson",
-    "Louisa May Alcott",
     "Major Henry Livingston, Jr.",
     "Mark Twain",
-    "Mary Elizabeth Coleridge",
     "Matthew Arnold",
-    "Matthew Prior",
     "Michael Drayton",
-    "Oliver Goldsmith",
     "Oliver Wendell Holmes",
-    "Oscar Wilde",
     "Paul Laurence Dunbar",
     "Percy Bysshe Shelley",
-    "Philip Freneau",
     "Phillis Wheatley",
     "Ralph Waldo Emerson",
     "Richard Crashaw",
@@ -190,23 +179,16 @@ var options = {
     "Sir Walter Scott",
     "Stephen Crane",
     "Thomas Campbell",
-    "Thomas Chatterton",
     "Thomas Flatman",
-    "Thomas Gray",
     "Thomas Hood",
     "Thomas Moore",
     "Thomas Warton",
     "Walt Whitman",
     "Walter Savage Landor",
-    "Wilfred Owen",
     "William Allingham",
-    "William Barnes",
     "William Blake",
-    "William Browne",
-    "William Cowper",
     "William Cullen Bryant",
     "William Ernest Henley",
-    "William Lisle Bowles",
     "William Morris",
     "William Shakespeare",
     "William Topaz McGonagall",
