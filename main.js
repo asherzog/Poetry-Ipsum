@@ -1,89 +1,69 @@
 $(document).ready(function() {
-
   $("input").easyAutocomplete(options);
-
-  $('form').submit(function(event) {
-    event.preventDefault();
-    $('.ipsum').html('');
-    var $input = $('input').val().split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1));
-    $('.ipsum').append('<div class="page-header"></div>');
-    $('.page-header').append('<h1>' + $input[$input.length - 1] + '-Ipsum</h1>');
-    $('input').val('');
-    if ($input.length > 1) {
-      $input = $input.join('%20');
-    }
-    $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + $input + '/author,title.json')
-      .then(findPoemTitles)
-      .then(findPoemLines)
-      .then(createIpsumArray);
-  });
-
-  $('button').click(function() {
-    $('.ipsum').html('');
-    var input = options['data'][Math.floor(Math.random() * (options['data'].length - 1))];
-    input = input.split(' ');
-    $('.ipsum').append('<div class="page-header"></div>');
-    $('.page-header').append('<h1>' + input[input.length - 1] + '-Ipsum ('+ input.join(' ') + ')</h1>');
-    if (input.length > 1) {
-      input = input.join('%20');
-    }
-    $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + input + '/author,title.json')
-      .then(findPoemTitles)
-      .then(findPoemLines)
-      .then(createIpsumArray);
-  });
+  $('form').submit(SearchIpsum);
+  $('button').click(randomIpsum);
 });
 
-
-// ----------------------------------------------
-function findPoemTitles(data) {
-  var titles = data.map(function(poem) {
-    return poem.title;
-  });
-  return titles;
+function SearchIpsum(event) {
+  event.preventDefault();
+  $('.ipsum').html('');
+  var $input = $('input').val().split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1));
+  $('.ipsum').append('<div class="page-header"></div>');
+  $('.page-header').append('<h1>' + $input[$input.length - 1] + '-Ipsum</h1>');
+  $('input').val('');
+  if ($input.length > 1) {
+    $input = $input.join('%20');
+  }
+  $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + $input,
+  createIpsum);
 };
-// ----------------------------------------------
-function findPoemLines(titles) {
-  var randomTitles = [];
-  if (titles.length > 5) {
-    while (randomTitles.length < 5) {
-      randomTitles.push(titles[Math.floor(Math.random() * (titles.length -1))]);
-    }
-  }else {
-    randomTitles.push(titles);
-  }
 
-  var promises = randomTitles.map(function(title) {
-    return $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/title/' + title + '/title,lines.json');
-  });
 
-  return Promise.all(promises);
-}
-// ----------------------------------------------
-function createIpsumArray(allTheData) {
+function createIpsum(data) {
+  shuffleArray(data);
   var ipsum = [];
-  if (allTheData.length < 3) {
-    for (var i = 0; i < allTheData.length; i++) {
-      var lines = allTheData[i][0].lines;
-      ipsum.push(lines[Math.floor(Math.random() * (lines.length - 1))]);
-    }
-  }else {
-    while (ipsum.length < 40) {
-      for (var i = 0; i < allTheData.length; i++) {
-        var lines = allTheData[i][0].lines;
-        ipsum.push(lines[Math.floor(Math.random() * (lines.length - 1))]);
-      }
-    }
+  while (ipsum.length < 30) {
+    var mapped = data.map(function(poem) {
+      var lines = poem.lines;
+      return lines[Math.floor(Math.random() * (lines.length - 1))];
+    });
+    shuffleArray(mapped);
+    ipsum.push(mapped[Math.floor(Math.random() * (mapped.length - 1))]);
   }
-
-
   addIpsumToPage(ipsum);
+};
+
+
+function shuffleArray(array) {
+  var counter = array.length;
+  while (counter > 0) {
+    var index = Math.floor(Math.random() * counter);
+    counter -- ;
+    var temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+  return array;
 }
-// ----------------------------------------------
+
 function addIpsumToPage(ipsum) {
   var ipsum = ipsum.join(' ');
   $('.ipsum').append('<article></article>');
   $('article').append('<p>' + ipsum + '</p>');
+};
+
+
+function randomIpsum() {
+  $('.ipsum').html('');
+  var input = options['data'][Math.floor(Math.random() * (options['data'].length - 1))];
+  input = input.split(' ');
+  $('.ipsum').append('<div class="page-header"></div>');
+  $('.page-header').append('<h1>' + input[input.length - 1] + '-Ipsum ('+ input.join(' ') + ')</h1>');
+  if (input.length > 1) {
+    input = input.join('%20');
+  }
+  $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + input,
+  createIpsum);
 };
 
 
