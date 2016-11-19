@@ -6,6 +6,7 @@ $(document).ready(function() {
 
 function SearchIpsum(event) {
   event.preventDefault();
+  var $selected = $('select').find(':selected').text();
   $('.ipsum').html('');
   var $input = $('input').val().split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1));
   $('.ipsum').append('<div class="page-header"></div>');
@@ -14,8 +15,12 @@ function SearchIpsum(event) {
   if ($input.length > 1) {
     $input = $input.join('%20');
   }
-  $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + $input,
-  createIpsum);
+  var count = 0;
+  while (count < $selected) {
+    $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + $input,
+    createIpsum);
+    count++;
+  }
 };
 
 
@@ -48,22 +53,32 @@ function shuffleArray(array) {
 
 function addIpsumToPage(ipsum) {
   var ipsum = ipsum.join(' ');
-  $('.ipsum').append('<article></article>');
-  $('article').append('<p>' + ipsum + '</p>');
+  if ($('.ipsum').find('article').length) {
+    $('article').append('<p>' + ipsum + '</p>');
+  }
+  else {
+    $('.ipsum').append('<article></article>');
+    $('article').append('<p>' + ipsum + '</p>');
+  }
 };
 
 
 function randomIpsum() {
+  var $selected = $('select').find(':selected').text();
   $('.ipsum').html('');
   var input = options['data'][Math.floor(Math.random() * (options['data'].length - 1))];
   input = input.split(' ');
   $('.ipsum').append('<div class="page-header"></div>');
-  $('.page-header').append('<h1>' + input[input.length - 1] + '-Ipsum ('+ input.join(' ') + ')</h1>');
+  $('.page-header').append('<h1>' + input.join(' ') + '-Ipsum</h1>');
   if (input.length > 1) {
     input = input.join('%20');
   }
-  $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + input,
-  createIpsum);
+  var count = 0;
+  while (count < $selected) {
+    $.get('https://galvanize-cors-proxy.herokuapp.com/http://poetrydb.org/author/' + input,
+    createIpsum);
+    count++;
+  }
 };
 
 
